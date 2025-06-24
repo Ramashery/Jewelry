@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloisonne Enamel Jewelry</title>
+    <meta name="description" content="Handmade cloisonne enamel jewelry by Nino Kartsivadze from Tbilisi.">
+    <style>
+        /* Стили остаются без изменений */
+        :root { --primary: #D4AF37; --primary-dark: #9B7C2E; --bg: #121212; --glass: rgba(255, 255, 255, 0.05); --shadow-dark: rgba(0, 0, 0, 0.2); --shadow-light: rgba(255, 255, 255, 0.05); --text-light: rgba(255, 255, 255, 0.9); --bg-dark: #080808; } * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; } body { background: var(--bg); color: var(--text-light); min-height: 100vh; position: relative; } #particles-js { position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: -1; } .product-page-container { max-width: 1100px; margin: 2rem auto; padding: 2rem; background: var(--glass); border-radius: 24px; box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light); backdrop-filter: blur(12px); border: 1px solid rgba(212, 175, 55, 0.1); display: flex; flex-direction: column; gap: 2rem; opacity: 0; transition: opacity 0.5s; } .product-page-container.loaded { opacity: 1; } .product-header { padding-bottom: 1rem; border-bottom: 1px solid rgba(212, 175, 55, 0.2); text-align: center; } .product-title { font-size: clamp(1.8rem, 5vw, 2.8rem); color: var(--primary); font-weight: 300; } .product-body { display: flex; flex-direction: column; gap: 2rem; } .slideshow-container { width: 100%; min-height: 300px; position: relative; border-radius: 16px; overflow: hidden; box-shadow: 4px 4px 8px var(--shadow-dark); -webkit-mask-image: -webkit-radial-gradient(white, black); } .slideshow-item { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.7s ease-in-out; pointer-events: none; } .slideshow-item.active { opacity: 1; } .slideshow-item-video { width: 140%; height: 140%; top: -20%; left: -20%; } .slideshow-item-video iframe { width: 100%; height: 100%; border: none; } .slideshow-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; cursor: grab; } .product-details { display: flex; flex-direction: column; gap: 1rem; } .product-description { line-height: 1.7; color: rgba(255, 255, 255, 0.85); font-size: 1rem; } .product-features { list-style-type: none; margin-top: 1rem; padding-left: 0; } .product-features li { padding: 0.5rem 0; position: relative; padding-left: 1.5rem; } .product-features li::before { content: '✦'; position: absolute; left: 0; color: var(--primary); } .product-price { font-size: 2.2rem; color: var(--primary); margin: 1rem 0; font-weight: 300; } .product-actions { display: flex; gap: 1rem; margin-top: 1rem; } .action-button { flex-grow: 1; padding: 1rem; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.3s; text-decoration: none; text-align: center; display: block; background: var(--primary); color: var(--bg-dark); box-shadow: 4px 4px 8px var(--shadow-dark); } .action-button:hover { background: var(--primary-dark); transform: translateY(-2px); } .back-link { display: inline-block; margin-top: 2rem; color: var(--primary); text-decoration: none; text-align: center; width: 100%; } .back-link:hover { text-decoration: underline; } .message-container { text-align: center; font-size: 1.5rem; padding: 5rem 1rem; color: var(--primary); } @media (min-width: 768px) { .product-body { flex-direction: row; } .slideshow-container { width: 50%; min-height: 500px; } .product-details { width: 50%; padding-left: 2rem; } }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div id="message-container" class="message-container">Loading masterpiece...</div>
+    <div class="product-page-container" id="product-content">
+        <div class="product-header"><h1 class="product-title"></h1></div>
+        <div class="product-body">
+            <div class="slideshow-container"></div>
+            <div class="product-details">
+                <p class="product-description"></p>
+                <ul class="product-features"></ul>
+                <p class="product-price"></p>
+                <div class="product-actions">
+                    <a href="#" class="action-button" id="order-now-button" target="_blank" rel="noopener noreferrer">ORDER NOW</a>
+                </div>
+            </div>
+        </div>
+         <a href="/" class="back-link">← Back to All Products</a>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        window.onYouTubeIframeAPIReady = function() {};
+
+        function initializeProductPage() {
+            const firebaseConfig = {
+              apiKey: "AIzaSyAxOUOxaufE60eVuyOq_P66MJ9ls_7p470",
+              authDomain: "nini-shop-7c89d.firebaseapp.com",
+              projectId: "nini-shop-7c89d",
+              storageBucket: "nini-shop-7c89d.appspot.com",
+              messagingSenderId: "595482257713",
+              appId: "1:595482257713:web:3e3d3bf75f03c08e58a810",
+              measurementId: "G-0HX4N09DYT"
+            };
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            const db = firebase.firestore();
+            const particleConfig = { "particles": { "number": { "value": 80, "density": { "enable": true, "value_area": 800 }}, "color": { "value": "#D4AF37" }, "shape": { "type": "circle" }, "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1 }}, "size": { "value": 3, "random": true, "anim": { "enable": true, "speed": 2, "size_min": 0.1 }}, "line_linked": { "enable": true, "distance": 150, "color": "#D4AF37", "opacity": 0.2, "width": 1 }, "move": { "enable": true, "speed": 1, "direction": "none", "random": true, "out_mode": "out" }}, "interactivity": { "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }}}, "retina_detect": true };
+            if (document.getElementById('particles-js')) {
+                particlesJS('particles-js', particleConfig);
+            }
+            
+            const productContent = document.getElementById('product-content');
+            const messageContainer = document.getElementById('message-container');
+            productContent.style.display = 'none';
+
+            function isYoutubeUrl(url) { return /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/.test(url); }
+            function getYoutubeEmbedUrl(url) { let videoId; try { const urlObj = new URL(url); videoId = (urlObj.hostname === 'youtu.be') ? urlObj.pathname.slice(1) : urlObj.searchParams.get('v'); } catch(e) { return null; } return videoId ? `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&origin=${window.location.origin}` : null; }
+            function createMediaElement(mediaUrl, productTitle) { if (isYoutubeUrl(mediaUrl)) { const embedUrl = getYoutubeEmbedUrl(mediaUrl); if (!embedUrl) return null; const wrapper = document.createElement('div'); wrapper.className = 'slideshow-item slideshow-item-video'; const iframe = document.createElement('iframe'); iframe.src = embedUrl; iframe.title = productTitle + ' - YouTube Video'; wrapper.appendChild(iframe); return wrapper; } else { const img = document.createElement('img'); img.src = mediaUrl; img.alt = productTitle + ' - handmade cloisonne enamel'; img.className = 'slideshow-item'; return img; } }
+            function setupSlideshow(container) { const slides = Array.from(container.querySelectorAll('.slideshow-item')); if (slides.length <= 1) { if (slides.length === 1) slides[0].classList.add('active'); return; } const overlay = document.createElement('div'); overlay.className = 'slideshow-overlay'; container.appendChild(overlay); let currentIndex = 0; let intervalId = setInterval(() => showSlide(currentIndex + 1), 5000); function showSlide(index) { if (!slides[currentIndex]) return; slides[currentIndex].classList.remove('active'); currentIndex = (index + slides.length) % slides.length; slides[currentIndex].classList.add('active'); } function manualSlide(direction) { clearInterval(intervalId); showSlide(currentIndex + direction); intervalId = setInterval(() => showSlide(currentIndex + 1), 5000); } let touchStartX = 0; overlay.addEventListener('mousedown', e => touchStartX = e.clientX); overlay.addEventListener('mouseup', e => { if (e.clientX < touchStartX - 50) manualSlide(1); if (e.clientX > touchStartX + 50) manualSlide(-1); }); overlay.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX, { passive: true }); overlay.addEventListener('touchend', e => { const touchEndX = e.changedTouches[0].clientX; if (touchEndX < touchStartX - 50) manualSlide(1); if (touchEndX > touchStartX + 50) manualSlide(-1); }); showSlide(0); }
+
+            async function loadProduct() {
+                const params = new URLSearchParams(window.location.search);
+                const productSlug = params.get('slug');
+                if (!productSlug) { messageContainer.textContent = 'Error: Product SLUG not provided in URL.'; return; }
+                try {
+                    const productsRef = db.collection('products');
+                    const snapshot = await productsRef.where('slug', '==', productSlug).limit(1).get();
+                    if (snapshot.empty) { messageContainer.textContent = 'Sorry, this product could not be found.'; return; }
+                    
+                    const product = snapshot.docs[0].data();
+                    document.title = `${product.title} | Nino Kartsivadze Enamel`;
+                    document.querySelector('meta[name="description"]').setAttribute('content', product.description.substring(0, 160) + '...');
+                    productContent.querySelector('.product-title').textContent = product.title;
+                    productContent.querySelector('.product-description').textContent = product.description;
+                    productContent.querySelector('.product-price').textContent = product.price;
+                    productContent.querySelector('.product-features').innerHTML = product.features?.map(f => `<li>${f}</li>`).join('') || '';
+                    const mediaContainer = productContent.querySelector('.slideshow-container');
+                    mediaContainer.innerHTML = '';
+                    (product.images || []).forEach(mediaUrl => { const mediaElement = createMediaElement(mediaUrl, product.title); if (mediaElement) mediaContainer.appendChild(mediaElement); });
+                    setupSlideshow(mediaContainer);
+                    
+                    const orderButton = document.getElementById('order-now-button');
+                    const whatsappNumber = '995593221687';
+                    const productPageUrl = window.location.href;
+                    const message = `Hello! I am interested in your product.\n\n${productPageUrl}`;
+                    orderButton.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+                    
+                    messageContainer.style.display = 'none';
+                    productContent.style.display = 'flex';
+                    setTimeout(() => productContent.classList.add('loaded'), 50);
+                } catch (error) { console.error("Критическая ошибка при загрузке продукта:", error); messageContainer.textContent = 'An error occurred while loading product data.'; }
+            }
+            loadProduct();
+        }
+        initializeProductPage();
+    </script>
+</body>
+</html>
