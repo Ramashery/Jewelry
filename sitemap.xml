@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Главная страница -->
+  <url>
+    <loc>https://minankari.art/</loc>
+    <lastmod>2024-07-05</lastmod>
+    <priority>1.00</priority>
+  </url>
+
+  <!-- Страница "О нас" -->
+  <url>
+    <loc>https://minankari.art/about.html</loc>
+    <lastmod>2024-07-05</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <!-- Страница "Продукт" -->
+  <url>
+    <loc>https://minankari.art/product.html</loc>
+    <lastmod>2024-07-05</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+</urlset>
