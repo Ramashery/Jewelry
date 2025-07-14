@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Nino Kartsivadze | Cloisonne Enamel Artist</title>
+    <meta name="description" content="Learn about Nino Kartsivadze, an artist of cloisonne enamel (Minankari) from Tbilisi, Georgia, and her unique handcrafted jewelry."> 
+    
+    <!-- *** ИЗМЕНЕНИЕ 1: Микроразметка теперь является "заглушкой" с ID *** -->
+    <script type="application/ld+json" id="about-person-schema">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Nino Kartsivadze",
+      "jobTitle": "Cloisonné Enamel Artist",
+      "url": "https://ramashery.github.io/NinoBlog3/about.html"
+    }
+    </script>
+    
+    <style>
+        :root { --primary: #D4AF37; --primary-dark: #9B7C2E; --bg: #121212; --bg-dark: #080808; --glass: rgba(255, 255, 255, 0.05); --glass-dark: rgba(0, 0, 0, 0.2); --text-light: rgba(255, 255, 255, 0.9); --text-dark: rgba(0, 0, 0, 0.8); --shadow-dark: rgba(0, 0, 0, 0.2); --shadow-light: rgba(255, 255, 255, 0.05); } * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; } body { background: var(--bg); color: var(--text-light); overflow-x: hidden; min-height: 100vh; position: relative; } 
+        #particles-js { position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: 2; pointer-events: none; }
+        .page-container, .related-container { max-width: 900px; margin: 2rem auto; padding: 2rem; background: var(--glass); border-radius: 24px; backdrop-filter: blur(12px); border: 1px solid rgba(212, 175, 55, 0.1); opacity: 0; transition: opacity 0.5s; position: relative; z-index: 1; }
+        @media (min-width: 992px) { .page-container, .related-container { max-width: 1100px; } }
+        .page-container.loaded, .related-container.loaded { opacity: 1; }
+        .page-header { padding-bottom: 1rem; border-bottom: 1px solid rgba(212, 175, 55, 0.2); text-align: center; margin-bottom: 2rem; }
+        .page-title { font-size: clamp(1.8rem, 5vw, 2.8rem); color: var(--primary); font-weight: 300; }
+        .about-body { display: flow-root; } /* Fix for containing floats */
+        .about-details { line-height: 1.8; font-size: 1.1rem; }
+        .about-details p { margin-bottom: 1em; } .about-details p:last-child { margin-bottom: 0; }
+        .about-details a { color: var(--primary); text-decoration: none; border-bottom: 1px dotted var(--primary); transition: color 0.3s, background-color 0.3s; }
+        .about-details a:hover { color: var(--bg-dark); background-color: var(--primary); }
+        .slideshow-container { width: 100%; height: auto; aspect-ratio: 1 / 1; margin-bottom: 1.5rem; position: relative; border-radius: 16px; overflow: hidden; box-shadow: 4px 4px 8px var(--shadow-dark); -webkit-mask-image: -webkit-radial-gradient(white, black); background-color: var(--glass); }
+        .slideshow-item { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 1.2s ease-in-out; pointer-events: none; }
+        .slideshow-item.active { opacity: 1; }
+        .slideshow-item-video { width: 140%; height: 140%; top: -20%; left: -20%; position: absolute; pointer-events: none; }
+        .slideshow-item-video iframe { width: 100%; height: 100%; border: none; }
+        .slideshow-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; cursor: grab; }
+        .back-link { display: inline-block; margin-top: 2rem; color: var(--primary); text-decoration: none; text-align: center; width: 100%; clear: both; } .back-link:hover { text-decoration: underline; }
+        @media (min-width: 768px) { .slideshow-container { float: left; width: 45%; max-width: 400px; margin-right: 2rem; margin-bottom: 1rem; } }
+        .related-container { display: none; } .related-title { font-size: 2rem; color: var(--primary); font-weight: 300; text-align: center; margin-bottom: 2rem; } .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
+        .product-card, .blog-post-card { display: flex; flex-direction: column; background: var(--glass); border-radius: 24px; box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light); backdrop-filter: blur(12px); transition: transform 0.4s, box-shadow 0.4s; overflow: hidden; position: relative; border: 1px solid rgba(212, 175, 55, 0.1); text-decoration: none; color: var(--text-light); }
+        .product-card:hover, .blog-post-card:hover { transform: translateY(-8px); box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light); }
+        .product-card .slideshow-container, .blog-post-card .slideshow-container { height: 250px; aspect-ratio: unset; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); transition: clip-path 0.5s ease; float: none; margin: 0; max-width: none; width: 100%; }
+        .product-card:hover .slideshow-container, .blog-post-card:hover .slideshow-container { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 85%); }
+        .product-card .product-info, .blog-post-card .post-card-content { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-card .product-title, .blog-post-card .post-card-title { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--primary); }
+        .product-card .product-price { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+        .blog-post-card .post-card-subtitle { font-size: 1rem; font-weight: 300; opacity: 0.8; margin-bottom: 1rem; line-height: 1.4; }
+        .blog-post-card .post-card-date { margin-top: auto; font-size: 0.8rem; opacity: 0.6; padding-top: 1rem; }
+        .gold-button { display: inline-block; text-align: center; background: none; border: none; color: var(--primary); padding: 0.8rem 1.5rem; font-size: 1rem; border-radius: 50px; position: relative; overflow: hidden; cursor: pointer; z-index: 1; transition: color 0.3s; border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light); }
+        .gold-button::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); z-index: -1; clip-path: circle(0% at 50% 50%); transition: clip-path 0.5s ease; }
+        .gold-button:hover { color: var(--bg); } .gold-button:hover::before { clip-path: circle(100% at 50% 50%); }
+        header { padding: 4rem 2rem 2rem; display: flex; flex-direction: column; align-items: center; } header .logo { font-size: clamp(1.5rem, 6vw, 3.5rem); letter-spacing: clamp(0.15rem, 2vw, 0.5rem); white-space: nowrap; font-weight: 300; color: var(--primary); } header .subtitle { margin-top: 1rem; font-weight: 300; letter-spacing: 0.3rem; } nav { display: flex; justify-content: center; margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem; } .nav-link { margin: 0 1rem; color: var(--text-light); text-decoration: none; position: relative; padding: 0.5rem 0; } .nav-link::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: var(--primary); transition: width 0.3s ease; } .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <header>
+        <a href="index.html" style="text-decoration: none;"><div class="logo">CLOISONNÉ ENAMEL</div></a>
+        <p class="subtitle">NINO KARTSIVADZE</p>
+    </header>
+    <nav>
+        <a href="index.html" class="nav-link">HOME</a>
+        <a href="about.html" class="nav-link active">ABOUT ME</a>
+        <a href="blog.html" class="nav-link">BLOG</a>
+    </nav>
+    
+    <div id="page-content-wrapper">
+        <div class="page-container loaded">
+            <div class="page-header">
+                <h1 class="page-title">About Me</h1>
+            </div>
+            <div class="about-body">
+                <div class="slideshow-container" id="about-slideshow">
+                    <!-- Сюда JavaScript вставит картинки -->
+                </div>
+                <div class="about-details" id="about-text">
+                    <p>Loading biography...</p>
+                </div>
+            </div>
+            <a href="index.html" class="back-link">← Back to Showcase</a>
+        </div>
+    </div>
+
+    <div class="related-container" id="related-posts">
+        <h2 class="related-title">Read more articles</h2>
+        <div class="related-grid" id="related-posts-grid"></div>
+    </div>
+    <div class="related-container" id="related-products">
+        <h2 class="related-title">Featured jewelry</h2>
+        <div class="related-grid" id="related-products-grid"></div>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api" async defer></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+             const firebaseConfig = {
+                apiKey: "AIzaSyAxOUOxaufE60eVuyOq_P66MJ9ls_7p470", authDomain: "nini-shop-7c89d.firebaseapp.com", projectId: "nini-shop-7c89d", storageBucket: "nini-shop-7c89d.appspot.com", messagingSenderId: "595482257713", appId: "1:595482257713:web:3e3d3bf75f03c08e58a810", measurementId: "G-0HX4N09DYT"
+            };
+            if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+            const db = firebase.firestore();
+
+            const particleConfig = { "particles": { "number": { "value": 80, "density": { "enable": true, "value_area": 800 }}, "color": { "value": "#D4AF37" }, "shape": { "type": "circle" }, "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1 }}, "size": { "value": 3, "random": true, "anim": { "enable": true, "speed": 2, "size_min": 0.1 }}, "line_linked": { "enable": true, "distance": 150, "color": "#D4AF37", "opacity": 0.2, "width": 1 }, "move": { "enable": true, "speed": 1, "direction": "none", "random": true, "out_mode": "out" }}, "interactivity": { "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }}}, "retina_detect": true };
+            particlesJS('particles-js', particleConfig);
+
+            function isYoutubeUrl(url) { return /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/.test(url); }
+            function getYoutubeEmbedUrl(url) { let videoId; try { const urlObj = new URL(url); videoId = (urlObj.hostname === 'youtu.be') ? urlObj.pathname.slice(1) : urlObj.searchParams.get('v'); } catch(e) { return null; } if (!videoId) return null; const params = new URLSearchParams({ enablejsapi: 1, autoplay: 1, mute: 1, loop: 1, playlist: videoId, origin: window.location.origin, controls: 0 }); return `https://www.youtube.com/embed/${videoId}?${params.toString()}`; }
+            function createMediaElement(mediaUrl, title) { if (isYoutubeUrl(mediaUrl)) { const embedUrl = getYoutubeEmbedUrl(mediaUrl); if (!embedUrl) return null; const wrapper = document.createElement('div'); wrapper.className = 'slideshow-item slideshow-item-video'; const iframe = document.createElement('iframe'); iframe.src = embedUrl; iframe.title = title + ' - YouTube Video'; wrapper.appendChild(iframe); return wrapper; } else { const img = document.createElement('img'); img.src = mediaUrl; img.alt = title; img.className = 'slideshow-item'; return img; } }
+            function setupSlideshow(container) { const slides = Array.from(container.querySelectorAll('.slideshow-item')); if (slides.length <= 1) { if (slides.length === 1) slides[0].classList.add('active'); return; } if (container.querySelector('.slideshow-overlay')) return; const overlay = document.createElement('div'); overlay.className = 'slideshow-overlay'; container.appendChild(overlay); let currentIndex = 0; let intervalId = setInterval(() => showSlide(currentIndex + 1), 5000); function showSlide(index) { const oldSlide = slides[currentIndex]; if (oldSlide) oldSlide.classList.remove('active'); currentIndex = (index + slides.length) % slides.length; const newSlide = slides[currentIndex]; if (newSlide) setTimeout(() => newSlide.classList.add('active'), 1300); } function manualSlide(direction) { clearInterval(intervalId); showSlide(currentIndex + direction); intervalId = setInterval(() => showSlide(currentIndex + 1), 5000); } let touchStartX = 0; overlay.addEventListener('mousedown', e => { touchStartX = e.clientX; clearInterval(intervalId); }); overlay.addEventListener('mouseup', e => { if (e.clientX < touchStartX - 50) manualSlide(1); else if (e.clientX > touchStartX + 50) manualSlide(-1); intervalId = setInterval(() => showSlide(currentIndex + 1), 5000); }); showSlide(0); }
+            
+            async function loadRelatedPosts() { const container = document.getElementById('related-posts'); const grid = document.getElementById('related-posts-grid'); if (!container || !grid) return; grid.innerHTML = ''; const snapshot = await db.collection('blog_posts').orderBy('timestamp', 'desc').limit(3).get(); if (!snapshot.empty) { container.style.display = 'block'; setTimeout(() => container.classList.add('loaded'), 50); snapshot.docs.forEach(doc => { const post = doc.data(); let displayLang = '', displaySlug = '', displayTitle = '', displaySubtitle = ''; if (post.i18n?.en?.slug) { displayLang = 'en'; displaySlug = post.i18n.en.slug; displayTitle = post.i18n.en.title; displaySubtitle = post.i18n.en.subtitle; } else if (post.i18n?.ka?.slug) { displayLang = 'ka'; displaySlug = post.i18n.ka.slug; displayTitle = post.i18n.ka.title; displaySubtitle = post.i18n.ka.subtitle; } else if (post.i18n?.ru?.slug) { displayLang = 'ru'; displaySlug = post.i18n.ru.slug; displayTitle = post.i18n.ru.title; displaySubtitle = post.i18n.ru.subtitle; } else { return; } const cardLink = document.createElement('a'); cardLink.href = `${displayLang}/post.html?slug=${displaySlug}`; cardLink.className = 'blog-post-card'; const slideshowHTML = `<div class="slideshow-container">${(post.mediaUrls || ['https://via.placeholder.com/280x250.png/121212/D4AF37?text=No+Image']).map(url => createMediaElement(url, displayTitle)?.outerHTML || '').join('')}</div>`; const postInfoHTML = `<div class="post-card-content"><h3 class="post-card-title">${displayTitle || 'Untitled'}</h3>${displaySubtitle ? `<h4 class="post-card-subtitle">${displaySubtitle}</h4>` : ''}<p class="post-card-date">${new Date(post.timestamp.seconds * 1000).toLocaleDateString()}</p></div>`; cardLink.innerHTML = slideshowHTML + postInfoHTML; grid.appendChild(cardLink); setupSlideshow(cardLink.querySelector('.slideshow-container')); }); } }
+            async function loadRandomProducts() { const container = document.getElementById('related-products'); const grid = document.getElementById('related-products-grid'); grid.innerHTML = ''; const snapshot = await db.collection('products').get(); let allProducts = []; snapshot.forEach(doc => allProducts.push(doc.data())); if (allProducts.length > 0) { const randomProducts = allProducts.sort(() => 0.5 - Math.random()).slice(0, 3); container.style.display = 'block'; setTimeout(() => container.classList.add('loaded'), 50); randomProducts.forEach(product => { const productCard = document.createElement('a'); productCard.href = `product.html?slug=${product.slug}`; productCard.className = 'product-card'; const slideshowHTML = `<div class="slideshow-container">${(product.images || []).map(url => createMediaElement(url, product.title)?.outerHTML || '').join('')}</div>`; const productInfoHTML = `<div class="product-info"><h3 class="product-title">${product.title}</h3><p class="product-price">${product.price}</p><div class="gold-button">VIEW DETAILS</div></div>`; productCard.innerHTML = slideshowHTML + productInfoHTML; grid.appendChild(productCard); setupSlideshow(productCard.querySelector('.slideshow-container')); }); } }
+            
+            // *** ИЗМЕНЕНИЕ 2: Функция populateAboutContent теперь обновляет и микроразметку ***
+            async function populateAboutContent() {
+                try {
+                    const doc = await db.collection('site_content').doc('about_me').get();
+                    if (!doc.exists) { 
+                        console.error("About Me content not found in Firestore.");
+                        return; 
+                    }
+                    const content = doc.data();
+                    
+                    const slideshowContainer = document.getElementById('about-slideshow');
+                    const textContainer = document.getElementById('about-text');
+                    const schemaScript = document.getElementById('about-person-schema');
+
+                    // 1. Обновляем видимый контент
+                    if (slideshowContainer && content.images && content.images.length > 0) {
+                        slideshowContainer.innerHTML = ''; // Очищаем на случай повторного вызова
+                        content.images.forEach(url => {
+                            const mediaElement = createMediaElement(url, 'About Nino Kartsivadze');
+                            if (mediaElement) slideshowContainer.appendChild(mediaElement);
+                        });
+                        setupSlideshow(slideshowContainer);
+                    }
+                    
+                    if(textContainer && content.text) {
+                        textContainer.innerHTML = content.text.split('\n').filter(p => p.trim() !== '').map(p => `<p>${p}</p>`).join('');
+                    }
+
+                    // 2. Обновляем микроразметку
+                    if (schemaScript) {
+                        // Убираем HTML теги из текста для описания
+                        const plainTextDescription = content.text ? content.text.replace(/<[^>]*>/g, '').replace(/\s\s+/g, ' ').trim() : 'Nino Kartsivadze is a Georgian artist specializing in the ancient craft of cloisonné enamel...';
+
+                        const schema = {
+                          "@context": "https://schema.org",
+                          "@type": "Person",
+                          "name": "Nino Kartsivadze",
+                          "jobTitle": "Cloisonné Enamel Artist",
+                          "url": window.location.href, // Используем актуальный URL
+                          "image": (content.images && content.images.length > 0) ? content.images[0] : "",
+                          "sameAs": [],
+                          "description": plainTextDescription,
+                          "knowsAbout": ["Cloisonné", "Enamel jewelry", "Minankari", "Artisan Jewelry"],
+                          "homeLocation": {
+                            "@type": "Place",
+                            "name": "Tbilisi, Georgia"
+                          }
+                        };
+                        schemaScript.textContent = JSON.stringify(schema, null, 2);
+                    }
+
+                } catch (error) { 
+                    console.error("Error populating About Me content:", error); 
+                    const textContainer = document.getElementById('about-text');
+                    if (textContainer) textContainer.innerHTML = "<p>Could not load biography. Please try again later.</p>";
+                }
+            }
+            
+            // Запускаем все функции
+            populateAboutContent();
+            loadRelatedPosts();
+            loadRandomProducts();
+        });
+    </script>
+</body>
+</html>
