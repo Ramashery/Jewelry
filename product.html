@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloisonne Enamel Jewelry</title>
+    <meta name="description" content="Handmade cloisonne enamel jewelry by Nino Kartsivadze from Tbilisi.">
+    
+    <style>
+        :root { --primary: #D4AF37; --primary-dark: #9B7C2E; --bg: #121212; --glass: rgba(255, 255, 255, 0.05); --shadow-dark: rgba(0, 0, 0, 0.2); --shadow-light: rgba(255, 255, 255, 0.05); --text-light: rgba(255, 255, 255, 0.9); --bg-dark: #080808; } * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; } body { background: var(--bg); color: var(--text-light); min-height: 100vh; position: relative; } 
+        #particles-js { position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: 2; pointer-events: none; } 
+        .product-page-container, .related-products-container { max-width: 1100px; margin: 2rem auto; padding: 2rem; background: var(--glass); border-radius: 24px; box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light); backdrop-filter: blur(12px); border: 1px solid rgba(212, 175, 55, 0.1); opacity: 0; transition: opacity 0.5s; position: relative; z-index: 1; display: none; } 
+        .product-page-container.loaded, .related-products-container.loaded { opacity: 1; }
+        .product-page-container { display: flex; flex-direction: column; gap: 2rem; }
+        .product-header { padding-bottom: 1rem; border-bottom: 1px solid rgba(212, 175, 55, 0.2); text-align: center; } 
+        .product-title { font-size: clamp(1.8rem, 5vw, 2.8rem); color: var(--primary); font-weight: 300; } 
+        .product-body { display: flex; flex-direction: column; gap: 2rem; } 
+        .slideshow-container { width: 100%; min-height: 300px; position: relative; border-radius: 16px; overflow: hidden; box-shadow: 4px 4px 8px var(--shadow-dark); -webkit-mask-image: -webkit-radial-gradient(white, black); } 
+        .slideshow-item { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 1.2s ease-in-out; pointer-events: none; } 
+        .slideshow-item.active { opacity: 1; } 
+        .slideshow-item-video { width: 140%; height: 140%; top: -20%; left: -20%; } 
+        .slideshow-item-video iframe { width: 100%; height: 100%; border: none; } 
+        .slideshow-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; cursor: grab; } 
+        .product-details { display: flex; flex-direction: column; gap: 1rem; } 
+        .product-description { line-height: 1.7; color: rgba(255, 255, 255, 0.85); font-size: 1rem; } 
+        .product-description p { margin-bottom: 1em; }
+        .product-description p:last-child { margin-bottom: 0; }
+        .product-features { list-style-type: none; margin-top: 1rem; padding-left: 0; } 
+        .product-features li { padding: 0.5rem 0; position: relative; padding-left: 1.5rem; } 
+        .product-features li::before { content: '✦'; position: absolute; left: 0; color: var(--primary); } 
+        .product-price { font-size: 2.2rem; color: var(--primary); margin: 1rem 0; font-weight: 300; } 
+        .product-actions { display: flex; gap: 1rem; margin-top: 1rem; } 
+        .action-button { flex-grow: 1; padding: 1rem; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.3s; text-decoration: none; text-align: center; display: block; background: var(--primary); color: var(--bg-dark); box-shadow: 4px 4px 8px var(--shadow-dark); } 
+        .action-button:hover { background: var(--primary-dark); transform: translateY(-2px); } 
+        .back-link { display: inline-block; margin-top: 2rem; color: var(--primary); text-decoration: none; text-align: center; width: 100%; } 
+        .back-link:hover { text-decoration: underline; } 
+        .message-container { text-align: center; font-size: 1.5rem; padding: 5rem 1rem; color: var(--primary); } 
+        #initial-schema-for-google { display: none; }
+        @media (min-width: 768px) { .product-body { flex-direction: column; } .slideshow-container { width: 100%; height: auto; aspect-ratio: 1 / 1; min-height: 0; } .product-details { width: 100%; padding-left: 0; } }
+        .related-products-container { display: none; } .related-products-title { font-size: 2rem; color: var(--primary); font-weight: 300; text-align: center; margin-bottom: 2rem; } .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; } .product-card { background: var(--glass); border-radius: 24px; box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light); backdrop-filter: blur(12px); transition: transform 0.4s, box-shadow 0.4s; overflow: hidden; position: relative; border: 1px solid rgba(212, 175, 55, 0.1); text-decoration: none; } .product-card:hover { transform: translateY(-8px); box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light); } .product-card .slideshow-container { height: 250px; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); transition: clip-path 0.5s ease; } .product-card:hover .slideshow-container { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 85%); } .product-card .product-info { padding: 1.5rem; } .product-card .product-title { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--primary); } .product-card .product-price { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; } .gold-button { display: inline-block; text-align: center; background: none; border: none; color: var(--primary); padding: 0.8rem 1.5rem; font-size: 1rem; border-radius: 50px; position: relative; overflow: hidden; cursor: pointer; z-index: 1; transition: color 0.3s; border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light); } .gold-button::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); z-index: -1; clip-path: circle(0% at 50% 50%); transition: clip-path 0.5s ease; } .gold-button:hover { color: var(--bg); } .gold-button:hover::before { clip-path: circle(100% at 50% 50%); }
+    </style>
+</head>
+<body>
+    
+    <script type="application/ld+json" id="initial-schema-for-google">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "Handmade Cloisonne Enamel Jewelry",
+      "image": "https://ramashery.github.io/Jewelry/placeholder.jpg",
+      "description": "Exclusive handmade cloisonne enamel jewelry by Nino Kartsivadze from Tbilisi, Georgia. Discover unique rings, pendants, and earrings.",
+      "brand": {
+        "@type": "Person",
+        "name": "Nino Kartsivadze"
+      },
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": "199",
+        "availability": "https://schema.org/InStock",
+        "itemCondition": "https://schema.org/NewCondition"
+      }
+    }
+    </script>
+    
+    <div id="particles-js"></div>
+    <div id="message-container" class="message-container">Loading masterpiece...</div>
+    
+    <div id="page-content-wrapper"></div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        window.onYouTubeIframeAPIReady = function() {};
+
+        function buildPage(product) {
+            const productId = product.id;
+            const schemaScript = document.getElementById('initial-schema-for-google');
+            
+            const priceValue = product.price ? parseFloat(String(product.price).replace(/[^0-9.]/g, '')) : NaN;
+            const hasValidPrice = !isNaN(priceValue) && priceValue > 0;
+
+            // <!-- ИЗМЕНЕНИЕ НАЧАЛО: Умная установка Title и Description для Продукта -->
+            // Используем специальный SEO-заголовок, если он есть. Если нет - используем обычный.
+            const seoTitle = product.seoTitle || product.title;
+            document.title = `${seoTitle} | Nino Kartsivadze Enamel`;
+
+            // Используем специальное мета-описание, если оно есть. Если нет - фолбэк на основное описание.
+            const metaDescription = product.metaDescription || product.description.substring(0, 160) + '...';
+            document.querySelector('meta[name="description"]').setAttribute('content', metaDescription);
+            // <!-- ИЗМЕНЕНИЕ КОНЕЦ -->
+            
+            const schema = {
+                "@context": "https://schema.org/",
+                "@type": "Product",
+                "name": product.title,
+                "description": metaDescription, // Используем здесь уже готовую переменную
+                "sku": product.slug, 
+                "brand": { "@type": "Person", "name": "Nino Kartsivadze" },
+                "url": window.location.href
+            };
+
+            if (product.images && product.images.length > 0) {
+                schema.image = product.images.filter(url => !isYoutubeUrl(url));
+            } else {
+                schema.image = "https://ramashery.github.io/jewelry/placeholder.jpg";
+            }
+            if (hasValidPrice) {
+                schema.offers = {
+                    "@type": "Offer",
+                    "url": window.location.href,
+                    "priceCurrency": "USD", 
+                    "price": priceValue.toFixed(2),
+                    "availability": "https://schema.org/InStock",
+                    "itemCondition": "https://schema.org/NewCondition"
+                };
+            }
+            
+            if (schemaScript) {
+                schemaScript.textContent = JSON.stringify(schema, null, 2);
+            }
+            
+            const formattedDescription = product.description.split('\n').filter(p => p.trim() !== '').map(p => `<p>${p}</p>`).join('');
+            const featuresHTML = product.features?.map(f => `<li>${f}</li>`).join('') || '';
+            const mediaHTML = (product.images || []).map(mediaUrl => createMediaElement(mediaUrl, product.title)?.outerHTML || '').join('');
+            
+            const whatsappNumber = '995593221687';
+            const productPageUrl = window.location.href;
+            const message = `Hello! I am interested in your product.\n\n${productPageUrl}`;
+            const orderLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+            const pageHTML = `
+                <div class="product-page-container" id="product-content">
+                    <div class="product-header"><h1 class="product-title">${product.title}</h1></div>
+                    <div class="product-body">
+                        <div class="slideshow-container">${mediaHTML}</div>
+                        <div class="product-details">
+                            <div class="product-description">${formattedDescription}</div>
+                            <ul class="product-features">${featuresHTML}</ul>
+                            <p class="product-price">${product.price}</p>
+                            <div class="product-actions">
+                                <a href="${orderLink}" class="action-button" id="order-now-button" target="_blank" rel="noopener noreferrer">ORDER NOW</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="index.html" class="back-link">← Back to All Products</a>
+                </div>
+                <div class="related-products-container" id="related-products">
+                    <h2 class="related-products-title">You might also like</h2>
+                    <div class="products-grid" id="related-products-grid"></div>
+                </div>
+            `;
+
+            document.getElementById('page-content-wrapper').innerHTML = pageHTML;
+            document.getElementById('message-container').style.display = 'none';
+
+            const productContentEl = document.getElementById('product-content');
+            productContentEl.style.display = 'flex';
+            setTimeout(() => productContentEl.classList.add('loaded'), 50);
+
+            setupSlideshow(productContentEl.querySelector('.slideshow-container'));
+            if (product.category) {
+                loadRelatedProducts(product.category, productId);
+            }
+        }
+
+        function isYoutubeUrl(url) { return /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/.test(url); }
+        function getYoutubeEmbedUrl(url) { let videoId; try { const urlObj = new URL(url); videoId = (urlObj.hostname === 'youtu.be') ? urlObj.pathname.slice(1) : urlObj.searchParams.get('v'); } catch(e) { return null; } return videoId ? `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&origin=${window.location.origin}` : null; }
+        function createMediaElement(mediaUrl, productTitle) { if (isYoutubeUrl(mediaUrl)) { const embedUrl = getYoutubeEmbedUrl(mediaUrl); if (!embedUrl) return null; const wrapper = document.createElement('div'); wrapper.className = 'slideshow-item slideshow-item-video'; const iframe = document.createElement('iframe'); iframe.src = embedUrl; iframe.title = productTitle + ' - YouTube Video'; wrapper.appendChild(iframe); return wrapper; } else { const img = document.createElement('img'); img.src = mediaUrl; img.alt = productTitle + ' - handmade cloisonne enamel'; img.className = 'slideshow-item'; img.loading = 'lazy'; return img; } }
+        function setupSlideshow(container) { const slides = Array.from(container.querySelectorAll('.slideshow-item')); if (slides.length <= 1) { if (slides.length === 1) slides[0].classList.add('active'); return; } const overlay = document.createElement('div'); overlay.className = 'slideshow-overlay'; container.appendChild(overlay); let currentIndex = 0; let intervalId; function showSlide(index) { const oldSlide = slides[currentIndex]; if (oldSlide) oldSlide.classList.remove('active'); currentIndex = (index + slides.length) % slides.length; const newSlide = slides[currentIndex]; if (newSlide) setTimeout(() => newSlide.classList.add('active'), 1200); } function startAutoplay() { clearInterval(intervalId); intervalId = setInterval(() => showSlide(currentIndex + 1), 5000); } function manualSlide(direction) { clearInterval(intervalId); showSlide(currentIndex + direction); startAutoplay(); } let touchStartX = 0; overlay.addEventListener('mousedown', e => { touchStartX = e.clientX; clearInterval(intervalId); }); overlay.addEventListener('mouseup', e => { if (e.clientX < touchStartX - 50) manualSlide(1); else if (e.clientX > touchStartX + 50) manualSlide(-1); startAutoplay(); }); overlay.addEventListener('mouseleave', startAutoplay); showSlide(0); startAutoplay(); }
+        function setupMiniSlideshow(container) { const slides = Array.from(container.querySelectorAll('.slideshow-item')); if (slides.length <= 1) { if (slides.length === 1) slides[0].classList.add('active'); return; } const overlay = document.createElement('div'); overlay.className = 'slideshow-overlay'; container.appendChild(overlay); let currentIndex = 0, intervalId = setInterval(() => showSlide(currentIndex + 1), 4000); function showSlide(index) { const oldSlide = slides[currentIndex]; if (oldSlide) oldSlide.classList.remove('active'); currentIndex = (index + slides.length) % slides.length; const newSlide = slides[currentIndex]; if (newSlide) setTimeout(() => newSlide.classList.add('active'), 1300); } let touchStartX = 0; overlay.addEventListener('mousedown', e => touchStartX = e.clientX); overlay.addEventListener('mouseup', e => { if (e.clientX < touchStartX - 50) showSlide(currentIndex + 1); else if (e.clientX > touchStartX + 50) showSlide(currentIndex - 1); }); showSlide(0); }
+        async function loadRelatedProducts(db, category, currentProductId) { const relatedContainer = document.getElementById('related-products'); const grid = document.getElementById('related-products-grid'); if (!grid) return; const snapshot = await db.collection('products').where('category', '==', category).limit(4).get(); const relatedProducts = []; snapshot.forEach(doc => { if (doc.id !== currentProductId) { relatedProducts.push(doc.data()); } }); if (relatedProducts.length === 0) return; relatedContainer.style.display = 'block'; setTimeout(() => relatedContainer.classList.add('loaded'), 50); relatedProducts.slice(0, 3).forEach(product => { const productCard = document.createElement('a'); productCard.href = `product.html?slug=${product.slug}`; productCard.className = 'product-card'; const slideshowHTML = `<div class="slideshow-container">${(product.images || []).map(mediaUrl => createMediaElement(mediaUrl, product.title)?.outerHTML || '').join('')}</div>`; const productInfoHTML = `<div class="product-info"><h3 class="product-title">${product.title}</h3><p class="product-price">${product.price}</p><div class="gold-button">VIEW DETAILS</div></div>`; productCard.innerHTML = slideshowHTML + productInfoHTML; grid.appendChild(productCard); setupMiniSlideshow(productCard.querySelector('.slideshow-container')); }); }
+        
+        async function initializeProductPage() {
+            const firebaseConfig = { apiKey: "AIzaSyAxOUOxaufE60eVuyOq_P66MJ9ls_7p470", authDomain: "nini-shop-7c89d.firebaseapp.com", projectId: "nini-shop-7c89d", storageBucket: "nini-shop-7c89d.appspot.com", messagingSenderId: "595482257713", appId: "1:595482257713:web:3e3d3bf75f03c08e58a810", measurementId: "G-0HX4N09DYT" };
+            if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+            const db = firebase.firestore();
+            const particleConfig = { "particles": { "number": { "value": 80, "density": { "enable": true, "value_area": 800 }}, "color": { "value": "#D4AF37" }, "shape": { "type": "circle" }, "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1 }}, "size": { "value": 3, "random": true, "anim": { "enable": true, "speed": 2, "size_min": 0.1 }}, "line_linked": { "enable": true, "distance": 150, "color": "#D4AF37", "opacity": 0.2, "width": 1 }, "move": { "enable": true, "speed": 1, "direction": "none", "random": true, "out_mode": "out" }}, "interactivity": { "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }}}, "retina_detect": true };
+            if (document.getElementById('particles-js')) { particlesJS('particles-js', particleConfig); }
+            
+            const messageContainer = document.getElementById('message-container');
+            const params = new URLSearchParams(window.location.search);
+            const productSlug = params.get('slug');
+
+            if (!productSlug) { messageContainer.textContent = 'Error: Product not specified.'; return; }
+            try {
+                const snapshot = await db.collection('products').where('slug', '==', productSlug).limit(1).get();
+                if (snapshot.empty) { messageContainer.textContent = 'Sorry, this product could not be found.'; return; }
+                const productData = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
+                buildPage(productData);
+                await loadRelatedProducts(db, productData.category, productData.id);
+            } catch (error) { console.error("Critical error loading product:", error); messageContainer.textContent = 'An error occurred while loading product data.'; }
+        }
+        initializeProductPage();
+    </script>
+</body>
+</html>
