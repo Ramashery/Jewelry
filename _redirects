@@ -1,8 +1,0 @@
-# Redirect product pages with trailing slash
-/product.html?slug=*/ /product.html?slug=:splat 301!
-
-# Redirect blog post pages with trailing slash  
-/post.html?slug=*/ /post.html?slug=:splat 301!
-
-# Redirect for all pages with trailing slash
-/*/ /:splat 301
