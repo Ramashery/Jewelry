@@ -1,4 +1,0 @@
-location / {
-    # Remove trailing slash
-    rewrite ^/(.*)/$ /$1 permanent;
-}
