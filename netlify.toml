@@ -1,5 +1,0 @@
-# Файл: netlify.toml
-
-[[edge_functions]]
-  path = "/product.html"
-  function = "slug-fixer"
