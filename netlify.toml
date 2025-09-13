@@ -4,7 +4,7 @@
 
 [[redirects]]
   from = "/product.html"
-  query = { slug = "(.+)/" }
+  query = { slug = "(.+)(?:/|%2F)" }
   to = "/product.html?slug=$1"
   status = 301
   force = true
