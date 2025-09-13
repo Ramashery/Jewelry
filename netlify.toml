@@ -1,5 +1,10 @@
 [[redirects]]
-  from = "/product.html?slug=:slug_name/"
-  to = "/product.html?slug=:slug_name"
+  from = "/product.html"
+  # Это регулярное выражение для значения параметра 'slug'.
+  # Оно ищет любое значение, заканчивающееся на '/'.
+  # '(.+)' захватывает все символы перед '/'.
+  query = { slug = "(.+)/" }
+  # 'to' использует захваченную группу ($1) для формирования нового значения slug без '/'.
+  to = "/product.html?slug=$1"
   status = 301
   force = true
