@@ -1,10 +1,22 @@
+[build]
+  command = "echo 'No specific build command needed for static HTML'"
+  publish = "."
+
 [[redirects]]
   from = "/product.html"
-  # Это регулярное выражение для значения параметра 'slug'.
-  # Оно ищет любое значение, заканчивающееся на '/'.
-  # '(.+)' захватывает все символы перед '/'.
   query = { slug = "(.+)/" }
-  # 'to' использует захваченную группу ($1) для формирования нового значения slug без '/'.
   to = "/product.html?slug=$1"
   status = 301
   force = true
+
+[[redirects]]
+  from = "https://www.minankari.art/*"
+  to = "https://minankari.art/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/*/"
+  to = "/:splat"
+  status = 301
+  force = false
