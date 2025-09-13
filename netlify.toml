@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/product.html?slug=:slug_name/"
+  to = "/product.html?slug=:slug_name"
+  status = 301
+  force = true
