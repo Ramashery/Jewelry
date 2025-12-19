@@ -6,20 +6,24 @@ from jinja2 import Environment, FileSystemLoader
 
 # Настройка Firebase
 if 'FIREBASE_KEY' in os.environ:
-    key_dict = json.loads(os.environ['FIREBASE_KEY'])
-    cred = credentials.Certificate(key_dict)
-    if not firebase_admin._apps:
-        firebase_admin.initialize_app(cred)
-    db = firestore.client()
+    try:
+        key_dict = json.loads(os.environ['FIREBASE_KEY'])
+        cred = credentials.Certificate(key_dict)
+        if not firebase_admin._apps:
+            firebase_admin.initialize_app(cred)
+        db = firestore.client()
+    except Exception as e:
+        print(f"Ошибка инициализации Firebase: {e}")
+        exit(1)
 else:
     print("Ошибка: Секрет FIREBASE_KEY не найден!")
     exit(1)
 
+# Настройка шаблонизатора
 env = Environment(loader=FileSystemLoader('.'))
 
 def fetch_data():
-    print("📥 Загрузка данных...")
-    # Здесь мы заменили .doc() на .document()
+    print("📥 Загрузка данных из Firebase...")
     products = [doc.to_dict() for doc in db.collection('products').stream()]
     categories = {doc.id: doc.to_dict() for doc in db.collection('categories').stream()}
     blog_posts = [doc.to_dict() for doc in db.collection('blog_posts').stream()]
@@ -29,37 +33,47 @@ def fetch_data():
     
     return products, categories, blog_posts, about_me
 
-def render(template_name, output_path, data):
-    template = env.get_template(template_name)
-    html = template.render(**data)
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(html)
-    print(f"✅ Создан: {output_path}")
+def render_page(template_name, output_path, data):
+    try:
+        template = env.get_template(template_name)
+        html = template.render(**data)
+        # Создаем папку если нужно
+        folder = os.path.dirname(output_path)
+        if folder and not os.path.exists(folder):
+            os.makedirs(folder, exist_ok=True)
+            
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(html)
+        print(f"✅ Готово: {output_path}")
+    except Exception as e:
+        print(f"❌ Ошибка в {template_name}: {e}")
 
 def main():
     products, categories, blog_posts, about_me = fetch_data()
     
+    # Контекст
+    ctx = {'blog_posts': blog_posts, 'categories': categories, 'about': about_me}
+
     # 1. Главная (Enamel)
     en_prods = [p for p in products if categories.get(p.get('category'), {}).get('parent') == 'enamel']
-    render('index (9).html', 'index.html', {'page_products': en_prods})
+    render_page('index.html', 'index.html', {**ctx, 'page_products': en_prods})
 
     # 2. Cast
     ca_prods = [p for p in products if categories.get(p.get('category'), {}).get('parent') == 'cast']
-    render('cast.html', 'cast.html', {'page_products': ca_prods})
+    render_page('cast.html', 'cast.html', {**ctx, 'page_products': ca_prods})
 
     # 3. Blog
-    render('blog (1).html', 'blog.html', {'blog_posts': blog_posts})
+    render_page('blog.html', 'blog.html', ctx)
 
     # 4. About
-    render('about.html', 'about.html', {'about': about_me})
+    render_page('about.html', 'about.html', ctx)
 
-    # 5. Посты
+    # 5. Посты по языкам
     for lang in ['en', 'ru', 'ka']:
-        render('post (1).html', f'{lang}/post.html', {'current_lang': lang, 'blog_posts': blog_posts})
+        render_page('post.html', f'{lang}/post.html', {**ctx, 'current_lang': lang})
 
-    # 6. Карточка товара
-    render('product.html', 'product.html', {})
+    # 6. Product
+    render_page('product.html', 'product.html', ctx)
 
 if __name__ == "__main__":
-    main(
+    main()
