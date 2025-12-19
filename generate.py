@@ -61,15 +61,17 @@ def generate_home_with_products(data):
             # Генерируем slug для ссылки
             slug = product.get('slug') or product.get('title', 'product').lower().replace(' ', '-').replace(',', '').replace('/', '').replace("'", "")
             
-            images = '
-'.join(f'<img src="{img}" class="slideshow-item" style="display:none">' 
-                              for img in product.get('images', []) or product.get('productImages', []))
+            images = []
+            for img in product.get('images', []) or product.get('productImages', []):
+                images.append(f'<img src="{img}" class="slideshow-item" style="display:none">')
+            images_html = '
+'.join(images)
             
             products_html += f'''
             <div class="product-card" style="--delay: {i}">
                 <div class="slideshow-container">
                     <div class="product-image-container">
-                        {images}
+                        {images_html}
                     </div>
                     <div class="slideshow-overlay"></div>
                 </div>
@@ -87,16 +89,13 @@ def generate_home_with_products(data):
         )
         
         # Убираем Firebase-скрипты для статической версии
-        html = html.replace(
+        firebase_scripts = [
             '<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>',
-            ''
-        ).replace(
             '<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>',
-            ''
-        ).replace(
-            '<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>',
-            ''
-        )
+            '<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>'
+        ]
+        for script in firebase_scripts:
+            html = html.replace(script, '')
         
         with open(os.path.join(OUTPUT_DIR, 'index.html'), 'w', encoding='utf-8') as f:
             f.write(html)
@@ -107,7 +106,6 @@ def generate_home_with_products(data):
 # --- ОДИН product.html для ВСЕХ товаров (?slug=...) ---
 def generate_product_page(data):
     try:
-        # Рендерим template.html 
         first_product = data['products'][0] if data['products'] else {}
         slug = first_product.get('slug') or first_product.get('title', 'product').lower().replace(' ', '-')
         
@@ -162,7 +160,6 @@ def main():
     print("🔗 Структура:")
     print("   /index.html ← главная со всеми продуктами")
     print("   /product.html?slug=... ← детальная страница товара")
-    print("   Admin panel работает только на главной (Firebase)")
 
 if __name__ == '__main__':
     main()
