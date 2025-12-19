@@ -62,4 +62,4 @@ def main():
     render('product.html', 'product.html', {})
 
 if __name__ == "__main__":
-    main()
+    main(
