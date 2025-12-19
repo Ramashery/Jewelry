@@ -33,13 +33,3 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./public
-
-- name: Deploy to temporary preview URL
-        uses: nwtgck/actions-netlify@v2.0
-        with:
-          publish-dir: './public'
-          enable-pull-request-comment: false
-          enable-commit-comment: true
-          overwrites-pull-request-comment: true
-        timeout-minutes: 1
-        
