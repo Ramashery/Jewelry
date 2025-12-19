@@ -19,7 +19,6 @@ else:
     print("Ошибка: Секрет FIREBASE_KEY не найден!")
     exit(1)
 
-# Настройка шаблонизатора
 env = Environment(loader=FileSystemLoader('.'))
 
 def fetch_data():
@@ -27,21 +26,17 @@ def fetch_data():
     products = [doc.to_dict() for doc in db.collection('products').stream()]
     categories = {doc.id: doc.to_dict() for doc in db.collection('categories').stream()}
     blog_posts = [doc.to_dict() for doc in db.collection('blog_posts').stream()]
-    
     about_doc = db.collection('site_content').document('about_me').get()
     about_me = about_doc.to_dict() if about_doc.exists else {"text": "", "images": []}
-    
     return products, categories, blog_posts, about_me
 
 def render_page(template_name, output_path, data):
     try:
         template = env.get_template(template_name)
         html = template.render(**data)
-        # Создаем папку если нужно
         folder = os.path.dirname(output_path)
         if folder and not os.path.exists(folder):
-            os.makedirs(folder, exist_ok=True)
-            
+            os.makedirs(folder)
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(html)
         print(f"✅ Готово: {output_path}")
@@ -50,30 +45,27 @@ def render_page(template_name, output_path, data):
 
 def main():
     products, categories, blog_posts, about_me = fetch_data()
-    
-    # Контекст
-    ctx = {'blog_posts': blog_posts, 'categories': categories, 'about': about_me}
+    ctx = {'blog_posts': blog_posts, 'categories': categories, 'about': about_me, 'all_products': products}
 
-    # 1. Главная (Enamel)
+    # Генерация основных страниц
     en_prods = [p for p in products if categories.get(p.get('category'), {}).get('parent') == 'enamel']
     render_page('index.html', 'index.html', {**ctx, 'page_products': en_prods})
 
-    # 2. Cast
     ca_prods = [p for p in products if categories.get(p.get('category'), {}).get('parent') == 'cast']
     render_page('cast.html', 'cast.html', {**ctx, 'page_products': ca_prods})
-
-    # 3. Blog
+    
     render_page('blog.html', 'blog.html', ctx)
-
-    # 4. About
     render_page('about.html', 'about.html', ctx)
+    
+    # === НОВОЕ: Генерация отдельной страницы для каждого товара ===
+    for product in products:
+        if 'slug' in product:
+            related = [p for p in products if p.get('category') == product.get('category') and p.get('id') != product.get('id')][:3]
+            render_page('product.html', f"product/{product['slug']}.html", {**ctx, 'product': product, 'related_products': related})
 
-    # 5. Посты по языкам
+    # Посты по языкам
     for lang in ['en', 'ru', 'ka']:
         render_page('post.html', f'{lang}/post.html', {**ctx, 'current_lang': lang})
-
-    # 6. Product
-    render_page('product.html', 'product.html', ctx)
 
 if __name__ == "__main__":
     main()
