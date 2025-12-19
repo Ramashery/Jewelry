@@ -57,11 +57,13 @@ def main():
     render_page('blog.html', 'blog.html', ctx)
     render_page('about.html', 'about.html', ctx)
     
-    # === НОВОЕ: Генерация отдельной страницы для каждого товара ===
-    for product in products:
-        if 'slug' in product:
-            related = [p for p in products if p.get('category') == product.get('category') and p.get('id') != product.get('id')][:3]
-            render_page('product.html', f"product/{product['slug']}.html", {**ctx, 'product': product, 'related_products': related})
+    # === НОВОЕ: Передаем в product.html один товар для предзагрузки ===
+    default_product = products[0] if products else None
+    if default_product:
+        render_page('product.html', 'product.html', {**ctx, 'product': default_product})
+    else: # Если товаров нет, создаем пустую страницу
+        render_page('product.html', 'product.html', {**ctx})
+
 
     # Посты по языкам
     for lang in ['en', 'ru', 'ka']:
