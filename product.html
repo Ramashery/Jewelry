@@ -9,8 +9,8 @@
     <link rel="dns-prefetch" href="//www.gstatic.com">
     
     <!-- SEO-теги теперь вставляет Python -->
-    <title>{{ product.seoTitle or product.title or 'Cloisonne Enamel Jewelry' }} | Nino Kartsivadze</title>
-    <meta name="description" content="{{ (product.metaDescription or product.description or 'Handmade cloisonne enamel jewelry')[:160] }}">
+    <title>Pomegranate Pendant | Georgian Cloisonné Enamel Necklace | Nino Kartsivadze</title>
+    <meta name="description" content="✨ Embrace a timeless symbol of abundance. The "Pomegranate" pendant is masterfully handcrafted in Tbilisi from sterling silver and vibrant Georgian enamel (Mina">
     
     <!-- JS для быстрой подгрузки SEO-тегов ОСТАЕТСЯ, он нужен для ссылок с ?slug= -->
     <script>
@@ -57,14 +57,12 @@
     
     <!-- Этот блок будет виден только если JS не найдет товар по slug -->
     <div id="static-content">
-        {% if product %}
+        
         <div class="product-page-container">
-            <h1 class="product-title">{{ product.title }}</h1>
+            <h1 class="product-title"> Minankari Pendant "Pomegranate", Handmade Sterling Silver, Artisan from Tbilisi</h1>
             <!-- Здесь можно добавить больше статики: описание, цену и т.д. -->
         </div>
-        {% else %}
-        <div class="message-container">Product not found.</div>
-        {% endif %}
+        
     </div>
 
     <!-- Этот блок будет заполняться через JS, как и раньше -->
