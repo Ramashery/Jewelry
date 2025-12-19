@@ -4,7 +4,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from jinja2 import Environment, FileSystemLoader
 
-# Настройка Firebase (берем ключ из секретов GitHub)
+# Настройка Firebase
 if 'FIREBASE_KEY' in os.environ:
     key_dict = json.loads(os.environ['FIREBASE_KEY'])
     cred = credentials.Certificate(key_dict)
@@ -19,10 +19,14 @@ env = Environment(loader=FileSystemLoader('.'))
 
 def fetch_data():
     print("📥 Загрузка данных...")
+    # Здесь мы заменили .doc() на .document()
     products = [doc.to_dict() for doc in db.collection('products').stream()]
     categories = {doc.id: doc.to_dict() for doc in db.collection('categories').stream()}
     blog_posts = [doc.to_dict() for doc in db.collection('blog_posts').stream()]
-    about_me = db.collection('site_content').doc('about_me').get().to_dict()
+    
+    about_doc = db.collection('site_content').document('about_me').get()
+    about_me = about_doc.to_dict() if about_doc.exists else {"text": "", "images": []}
+    
     return products, categories, blog_posts, about_me
 
 def render(template_name, output_path, data):
@@ -50,11 +54,11 @@ def main():
     # 4. About
     render('about.html', 'about.html', {'about': about_me})
 
-    # 5. Посты (раскладываем по папкам языков)
+    # 5. Посты
     for lang in ['en', 'ru', 'ka']:
         render('post (1).html', f'{lang}/post.html', {'current_lang': lang, 'blog_posts': blog_posts})
 
-    # 6. Карточка товара (оставляем как общую оболочку)
+    # 6. Карточка товара
     render('product.html', 'product.html', {})
 
 if __name__ == "__main__":
