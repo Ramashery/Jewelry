@@ -31,15 +31,12 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 def get_all_data():
     data = {}
     try:
-        # Продукты (основная коллекция)
         products = db.collection('products').stream()
         data['products'] = [doc.to_dict() for doc in products]
         
-        # Категории
         categories = db.collection('categories').stream()
         data['categories'] = [doc.to_dict() for doc in categories]
         
-        # Home контент (если есть)
         home_doc = db.collection('home').document('content').get()
         data['home'] = home_doc.to_dict() if home_doc.exists else {}
         
@@ -49,46 +46,44 @@ def get_all_data():
         print(f"❌ Ошибка загрузки данных: {e}")
         return None
 
-# --- ГЛАВНАЯ СТРАНИЦА со ВСЕМИ продуктами (статическая!) ---
+# --- ГЛАВНАЯ СТРАНИЦА со ВСЕМИ продуктами ---
 def generate_home_with_products(data):
     try:
         with open('index.html', 'r', encoding='utf-8') as f:
             html = f.read()
         
-        # Генерируем HTML КАРТОЧЕК продуктов для #products-container
         products_html = ''
         for i, product in enumerate(data['products']):
-            # Генерируем slug для ссылки
             slug = product.get('slug') or product.get('title', 'product').lower().replace(' ', '-').replace(',', '').replace('/', '').replace("'", "")
             
-            images = []
-            for img in product.get('images', []) or product.get('productImages', []):
-                images.append(f'<img src="{img}" class="slideshow-item" style="display:none">')
-            images_html = '
-'.join(images)
+            images = product.get('images', []) or product.get('productImages', [])
+            images_html = ''
+            for img in images:
+                images_html += f'<img src="{img}" class="slideshow-item" style="display:none">
+'
             
-            products_html += f'''
-            <div class="product-card" style="--delay: {i}">
-                <div class="slideshow-container">
-                    <div class="product-image-container">
-                        {images_html}
-                    </div>
-                    <div class="slideshow-overlay"></div>
-                </div>
-                <div class="product-info">
-                    <h3 class="product-title">{product.get("title", "Product")}</h3>
-                    <p class="product-price">${product.get("price", "Price")}</p>
-                    <a href="product.html?slug={slug}" class="gold-button">View Details</a>
-                </div>
-            </div>'''
+            card_html = f'''
+<div class="product-card" style="--delay: {i}">
+    <div class="slideshow-container">
+        <div class="product-image-container">
+            {images_html}
+        </div>
+        <div class="slideshow-overlay"></div>
+    </div>
+    <div class="product-info">
+        <h3 class="product-title">{product.get("title", "Product")}</h3>
+        <p class="product-price">${product.get("price", "Price")}</p>
+        <a href="product.html?slug={slug}" class="gold-button">View Details</a>
+    </div>
+</div>'''
+            products_html += card_html
         
-        # Вставляем продукты в index.html
         html = html.replace(
             '<div class="products-grid" id="products-container"></div>',
             f'<div class="products-grid" id="products-container">{products_html}</div>'
         )
         
-        # Убираем Firebase-скрипты для статической версии
+        # Удаляем Firebase скрипты
         firebase_scripts = [
             '<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>',
             '<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>',
@@ -103,7 +98,7 @@ def generate_home_with_products(data):
     except Exception as e:
         print(f"❌ Ошибка главной страницы: {e}")
 
-# --- ОДИН product.html для ВСЕХ товаров (?slug=...) ---
+# --- ОДИН product.html для ВСЕХ товаров ---
 def generate_product_page(data):
     try:
         first_product = data['products'][0] if data['products'] else {}
@@ -119,11 +114,11 @@ def generate_product_page(data):
         product_path = os.path.join(OUTPUT_DIR, 'product.html')
         with open(product_path, 'w', encoding='utf-8') as f:
             f.write(html)
-        print(f"✅ product.html?slug={slug} (шаблон для всех товаров)")
+        print(f"✅ product.html?slug={slug}")
     except Exception as e:
         print(f"❌ Ошибка product.html: {e}")
 
-# --- КОПИРОВАНИЕ АССЕТОВ (CSS/JS/images) ---
+# --- КОПИРОВАНИЕ АССЕТОВ ---
 def copy_assets():
     exclude = ['.git', OUTPUT_DIR, 'generate.py', 'template.html', 'index.html']
     for item in os.listdir('.'):
@@ -143,11 +138,11 @@ def copy_assets():
 
 # --- ОСНОВНОЙ ЗАПУСК ---
 def main():
-    print("🚀 Генерация minankari.art (статическая версия)")
+    print("🚀 Генерация minankari.art")
     
     data = get_all_data()
     if not data:
-        print("❌ Нет данных. Проверь Firebase коллекции: products, categories")
+        print("❌ Нет данных. Проверь Firebase: products, categories")
         return
     
     generate_home_with_products(data)
@@ -155,11 +150,7 @@ def main():
     copy_assets()
     
     print("
-🎉 ГОТОВО!")
-    print(f"📂 Загружай ВСЮ папку 'public/' на Netlify")
-    print("🔗 Структура:")
-    print("   /index.html ← главная со всеми продуктами")
-    print("   /product.html?slug=... ← детальная страница товара")
+🎉 ГОТОВО! Загружай public/ на Netlify")
 
 if __name__ == '__main__':
     main()
