@@ -6,7 +6,6 @@ from firebase_admin import credentials, firestore
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 
-# --- НАСТРОЙКА FIREBASE ---
 try:
     service_account_info = json.loads(os.environ.get('FIREBASE_SERVICE_ACCOUNT'))
     cred = credentials.Certificate(service_account_info)
@@ -17,17 +16,14 @@ except Exception as e:
     print(f"❌ Firebase ошибка: {e}")
     exit(1)
 
-# Jinja из корня
 env = Environment(loader=FileSystemLoader('.'))
 template = env.get_template('template.html')
 
-# Папка для результата
 OUTPUT_DIR = 'public'
 if os.path.exists(OUTPUT_DIR):
     shutil.rmtree(OUTPUT_DIR)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# --- ЗАГРУЗКА ДАННЫХ ИЗ FIREBASE ---
 def get_all_data():
     data = {}
     try:
@@ -46,7 +42,6 @@ def get_all_data():
         print(f"❌ Ошибка загрузки данных: {e}")
         return None
 
-# --- ГЛАВНАЯ СТРАНИЦА со ВСЕМИ продуктами ---
 def generate_home_with_products(data):
     try:
         with open('index.html', 'r', encoding='utf-8') as f:
@@ -59,22 +54,9 @@ def generate_home_with_products(data):
             images = product.get('images', []) or product.get('productImages', [])
             images_html = ''
             for img in images:
-                images_html += f'<img src="{img}" class="slideshow-item" style="display:none">\n'
+                images_html += f'<img src="{img}" class="slideshow-item" style="display:none;">\n'
             
-            card_html = f'''
-<div class="product-card" style="--delay: {i}">
-    <div class="slideshow-container">
-        <div class="product-image-container">
-            {images_html}
-        </div>
-        <div class="slideshow-overlay"></div>
-    </div>
-    <div class="product-info">
-        <h3 class="product-title">{product.get("title", "Product")}</h3>
-        <p class="product-price">${product.get("price", "Price")}</p>
-        <a href="product.html?slug={slug}" class="gold-button">View Details</a>
-    </div>
-</div>'''
+            card_html = f'<div class="product-card" style="--delay: {i}"><div class="slideshow-container"><div class="product-image-container">{images_html}</div><div class="slideshow-overlay"></div></div><div class="product-info"><h3 class="product-title">{product.get("title", "Product")}</h3><p class="product-price">${product.get("price", "Price")}</p><a href="product.html?slug={slug}" class="gold-button">View Details</a></div></div>'
             products_html += card_html
         
         html = html.replace(
@@ -82,7 +64,6 @@ def generate_home_with_products(data):
             f'<div class="products-grid" id="products-container">{products_html}</div>'
         )
         
-        # Удаляем Firebase скрипты
         firebase_scripts = [
             '<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>',
             '<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>',
@@ -97,7 +78,6 @@ def generate_home_with_products(data):
     except Exception as e:
         print(f"❌ Ошибка главной страницы: {e}")
 
-# --- ОДИН product.html для ВСЕХ товаров ---
 def generate_product_page(data):
     try:
         first_product = data['products'][0] if data['products'] else {}
@@ -117,7 +97,6 @@ def generate_product_page(data):
     except Exception as e:
         print(f"❌ Ошибка product.html: {e}")
 
-# --- КОПИРОВАНИЕ АССЕТОВ ---
 def copy_assets():
     exclude = ['.git', OUTPUT_DIR, 'generate.py', 'template.html', 'index.html']
     for item in os.listdir('.'):
@@ -135,7 +114,6 @@ def copy_assets():
                 print(f"⚠️  {item}: {e}")
     print("✅ Все ассеты скопированы")
 
-# --- ОСНОВНОЙ ЗАПУСК ---
 def main():
     print("🚀 Генерация minankari.art")
     
@@ -148,8 +126,7 @@ def main():
     generate_product_page(data)
     copy_assets()
     
-    print("
-🎉 ГОТОВО! Загружай public/ на Netlify")
+    print("🎉 ГОТОВО! Загружай public/ на Netlify")
 
 if __name__ == '__main__':
     main()
