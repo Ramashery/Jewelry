@@ -59,8 +59,7 @@ def generate_home_with_products(data):
             images = product.get('images', []) or product.get('productImages', [])
             images_html = ''
             for img in images:
-                images_html += f'<img src="{img}" class="slideshow-item" style="display:none">
-'
+                images_html += f'<img src="{img}" class="slideshow-item" style="display:none">\n'
             
             card_html = f'''
 <div class="product-card" style="--delay: {i}">
