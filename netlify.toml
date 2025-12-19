@@ -1,0 +1,22 @@
+[build]
+  command = "echo 'No specific build command needed for static HTML'"
+  publish = "."
+
+[[redirects]]
+  from = "/product.html"
+  query = { slug = "(.+)(?:/|%2F)" }
+  to = "/product.html?slug=$1"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.minankari.art/*"
+  to = "https://minankari.art/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/*/"
+  to = "/:splat"
+  status = 301
+  force = false
