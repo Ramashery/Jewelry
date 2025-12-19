@@ -52,7 +52,7 @@ def get_all_data():
         except Exception as e:
             print(f"❌ Firebase failed: {e}")
     
-    # ТЕСТОВЫЕ ДАННЫЕ (работает БЕЗ Firebase!)
+    # ТЕСТОВЫЕ ДАННЫЕ
     print("✅ Использую тестовые данные")
     return {
         'products': [
@@ -60,38 +60,47 @@ def get_all_data():
                 'title': 'Minankari Pendant Pomegranate',
                 'price': '250',
                 'slug': 'minankari-pendant-pomegranate-handmade-sterling-silver-artisan-from-tbilisi',
-                'images': ['https://via.placeholder.com/400x300/D4AF37/FFFFFF?text=Pendant+1', 'https://via.placeholder.com/400x300/D4AF37/FFFFFF?text=Pendant+2']
+                'images': ['https://via.placeholder.com/400x300/D4AF37/FFFFFF?text=Pendant+1']
             },
             {
                 'title': 'Enamel Ring Gold',
                 'price': '180',
                 'slug': 'enamel-ring-gold-minankari-tbilisi',
                 'images': ['https://via.placeholder.com/400x300/Gold/FFFFFF?text=Ring']
-            },
-            {
-                'title': 'Cloisonne Earrings',
-                'price': '220',
-                'slug': 'cloisonne-earrings-minankari-tbilisi',
-                'images': ['https://via.placeholder.com/400x300/9B7C2E/FFFFFF?text=Earrings']
             }
         ],
-        'categories': [
-            {'name': 'Pendants', 'slug': 'pendants'},
-            {'name': 'Rings', 'slug': 'rings'},
-            {'name': 'Earrings', 'slug': 'earrings'}
-        ],
+        'categories': [{'name': 'Pendants'}, {'name': 'Rings'}],
         'home': {}
     }
 
-# --- ГЛАВНАЯ СТРАНИЦА со ВСЕМИ продуктами ---
+# --- ГЛАВНАЯ СТРАНИЦА со ВСЕМИ продуктами (ОТЛАДКА) ---
 def generate_home_with_products(data):
     try:
+        print("📂 Читаю index.html...")
         with open('index.html', 'r', encoding='utf-8') as f:
             html = f.read()
         
+        # ОТЛАДКА: ищем контейнер продуктов
+        target_string = '<div class="products-grid" id="products-container"></div>'
+        print(f"🔍 Ищу строку: '{target_string}'")
+        print(f"📏 Длина index.html: {len(html)} символов")
+        
+        if target_string in html:
+            print("✅ Контейнер найден!")
+        else:
+            print("❌ Контейнер НЕ найден!")
+            print("🔍 Ищу похожие строки:")
+            # Строка ниже была исправлена
+            for line in html.split('\n'):
+                if 'products-grid' in line or 'products-container' in line:
+                    print(f"  → '{line.strip()}'")
+        
+        # Создаём продукты
+        print(f"📦 Создаю {len(data['products'])} продуктов...")
         products_html = ''
         for i, product in enumerate(data['products']):
             slug = product.get('slug') or product.get('title', 'product').lower().replace(' ', '-').replace(',', '').replace('/', '').replace("'", "")
+            print(f"  📦 Продукт {i}: {product.get('title', 'Unknown')} → slug={slug}")
             
             images = product.get('images', [])
             images_html = ''
@@ -102,11 +111,16 @@ def generate_home_with_products(data):
             card_html = f'<div class="product-card" style="--delay: {i}"><div class="slideshow-container"><div class="product-image-container">{images_html}</div><div class="slideshow-overlay"></div></div><div class="product-info"><h3 class="product-title">{product.get("title", "Product")}</h3><p class="product-price">${product.get("price", "Price")}</p><a href="product.html?slug={slug}" class="gold-button">View Details</a></div></div>'
             products_html += card_html
         
-        html = html.replace(
-            '<div class="products-grid" id="products-container"></div>',
-            f'<div class="products-grid" id="products-container">{products_html}</div>'
-        )
+        print(f"📦 Готово HTML продуктов: {len(products_html)} символов")
         
+        # Заменяем контейнер
+        new_content = f'<div class="products-grid" id="products-container">{products_html}</div>'
+        old_count = html.count(target_string)
+        html = html.replace(target_string, new_content)
+        new_count = html.count(target_string)
+        print(f"🔄 Заменил: {old_count - new_count} контейнеров")
+        
+        # Удаляем Firebase
         firebase_scripts = [
             '<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>',
             '<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>',
@@ -117,11 +131,20 @@ def generate_home_with_products(data):
         
         with open(os.path.join(OUTPUT_DIR, 'index.html'), 'w', encoding='utf-8') as f:
             f.write(html)
-        print("✅ Главная страница со статическими продуктами")
+        print("✅ Главная создана!")
+        
+        # Проверяем результат
+        with open(os.path.join(OUTPUT_DIR, 'index.html'), 'r') as f:
+            result = f.read()
+        if 'product-card' in result:
+            print("🎉 Продукты ВСТАВЛЕНЫ в index.html!")
+        else:
+            print("❌ Продукты НЕ вставлены!")
+            
     except Exception as e:
         print(f"❌ Ошибка главной страницы: {e}")
 
-# --- ОДИН product.html для ВСЕХ товаров ---
+# --- ОДИН product.html ---
 def generate_product_page(data):
     try:
         first_product = data['products'][0] if data['products'] else {}
@@ -144,6 +167,7 @@ def generate_product_page(data):
 # --- КОПИРОВАНИЕ АССЕТОВ ---
 def copy_assets():
     exclude = ['.git', OUTPUT_DIR, 'generate.py', 'template.html', 'index.html']
+    copied = 0
     for item in os.listdir('.'):
         if item not in exclude:
             src = os.path.join('.', item)
@@ -152,12 +176,14 @@ def copy_assets():
                 if os.path.isfile(src):
                     shutil.copy2(src, dst)
                     print(f"📄 {item}")
+                    copied += 1
                 elif os.path.isdir(src):
                     shutil.copytree(src, dst, dirs_exist_ok=True)
                     print(f"📁 {item}/")
+                    copied += 1
             except Exception as e:
-                print(f"⚠️ {item}: {e}")
-    print("✅ Все ассеты скопированы")
+                print(f"⚠️  {item}: {e}")
+    print(f"✅ {copied} ассетов скопировано")
 
 # --- ОСНОВНОЙ ЗАПУСК ---
 def main():
@@ -174,8 +200,7 @@ def main():
     
     # Строка ниже была исправлена
     print("\n🎉 ГОТОВО! Загружай public/ на Netlify")
-    print("🔗 /index.html ← главная")
-    print("🔗 /product.html?slug=... ← детальная страница")
+    print("🔗 Проверь: https://Ramashery.github.io/Jewelry/")
 
 if __name__ == '__main__':
     main()
