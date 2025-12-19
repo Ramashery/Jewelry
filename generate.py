@@ -6,16 +6,22 @@ from firebase_admin import credentials, firestore
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 
-# --- НАСТРОЙКА FIREBASE (FIREBASE_KEY) ---
-try:
-    service_account_info = json.loads(os.environ.get('FIREBASE_KEY'))
-    cred = credentials.Certificate(service_account_info)
-    firebase_admin.initialize_app(cred)
-    db = firestore.client()
-    print("✅ Firebase подключен")
-except Exception as e:
-    print(f"❌ Firebase ошибка: {e}")
-    exit(1)
+# --- БЕЗОПАСНАЯ НАСТРОЙКА FIREBASE ---
+firebase_key = os.environ.get('FIREBASE_KEY')
+USE_FIREBASE = False
+
+if firebase_key and firebase_key.strip():
+    try:
+        service_account_info = json.loads(firebase_key)
+        cred = credentials.Certificate(service_account_info)
+        firebase_admin.initialize_app(cred)
+        db = firestore.client()
+        print("✅ Firebase подключен")
+        USE_FIREBASE = True
+    except Exception as e:
+        print(f"⚠️ Firebase ошибка, использую тестовые данные: {e}")
+else:
+    print("⚠️ FIREBASE_KEY пустой, использую тестовые данные")
 
 # Jinja из корня
 env = Environment(loader=FileSystemLoader('.'))
@@ -27,24 +33,55 @@ if os.path.exists(OUTPUT_DIR):
     shutil.rmtree(OUTPUT_DIR)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# --- ЗАГРУЗКА ДАННЫХ ИЗ FIREBASE ---
+# --- ДАННЫЕ (Firebase ИЛИ тестовые) ---
 def get_all_data():
-    data = {}
-    try:
-        products = db.collection('products').stream()
-        data['products'] = [doc.to_dict() for doc in products]
-        
-        categories = db.collection('categories').stream()
-        data['categories'] = [doc.to_dict() for doc in categories]
-        
-        home_doc = db.collection('home').document('content').get()
-        data['home'] = home_doc.to_dict() if home_doc.exists else {}
-        
-        print(f"✅ Загружено: {len(data['products'])} продуктов, {len(data['categories'])} категорий")
-        return data
-    except Exception as e:
-        print(f"❌ Ошибка загрузки данных: {e}")
-        return None
+    if USE_FIREBASE:
+        data = {}
+        try:
+            products = db.collection('products').stream()
+            data['products'] = [doc.to_dict() for doc in products]
+            
+            categories = db.collection('categories').stream()
+            data['categories'] = [doc.to_dict() for doc in categories]
+            
+            home_doc = db.collection('home').document('content').get()
+            data['home'] = home_doc.to_dict() if home_doc.exists else {}
+            
+            print(f"✅ Firebase: {len(data['products'])} продуктов, {len(data['categories'])} категорий")
+            return data
+        except Exception as e:
+            print(f"❌ Firebase failed: {e}")
+    
+    # ТЕСТОВЫЕ ДАННЫЕ (работает БЕЗ Firebase!)
+    print("✅ Использую тестовые данные")
+    return {
+        'products': [
+            {
+                'title': 'Minankari Pendant Pomegranate',
+                'price': '250',
+                'slug': 'minankari-pendant-pomegranate-handmade-sterling-silver-artisan-from-tbilisi',
+                'images': ['https://via.placeholder.com/400x300/D4AF37/FFFFFF?text=Pendant+1', 'https://via.placeholder.com/400x300/D4AF37/FFFFFF?text=Pendant+2']
+            },
+            {
+                'title': 'Enamel Ring Gold',
+                'price': '180',
+                'slug': 'enamel-ring-gold-minankari-tbilisi',
+                'images': ['https://via.placeholder.com/400x300/Gold/FFFFFF?text=Ring']
+            },
+            {
+                'title': 'Cloisonne Earrings',
+                'price': '220',
+                'slug': 'cloisonne-earrings-minankari-tbilisi',
+                'images': ['https://via.placeholder.com/400x300/9B7C2E/FFFFFF?text=Earrings']
+            }
+        ],
+        'categories': [
+            {'name': 'Pendants', 'slug': 'pendants'},
+            {'name': 'Rings', 'slug': 'rings'},
+            {'name': 'Earrings', 'slug': 'earrings'}
+        ],
+        'home': {}
+    }
 
 # --- ГЛАВНАЯ СТРАНИЦА со ВСЕМИ продуктами ---
 def generate_home_with_products(data):
@@ -56,7 +93,7 @@ def generate_home_with_products(data):
         for i, product in enumerate(data['products']):
             slug = product.get('slug') or product.get('title', 'product').lower().replace(' ', '-').replace(',', '').replace('/', '').replace("'", "")
             
-            images = product.get('images', []) or product.get('productImages', [])
+            images = product.get('images', [])
             images_html = ''
             for img in images:
                 # Строка ниже была исправлена
@@ -119,7 +156,7 @@ def copy_assets():
                     shutil.copytree(src, dst, dirs_exist_ok=True)
                     print(f"📁 {item}/")
             except Exception as e:
-                print(f"⚠️  {item}: {e}")
+                print(f"⚠️ {item}: {e}")
     print("✅ Все ассеты скопированы")
 
 # --- ОСНОВНОЙ ЗАПУСК ---
@@ -127,8 +164,8 @@ def main():
     print("🚀 Генерация minankari.art")
     
     data = get_all_data()
-    if not data:
-        print("❌ Нет данных. Проверь Firebase: products, categories")
+    if not data or not data.get('products'):
+        print("❌ Нет данных продуктов")
         return
     
     generate_home_with_products(data)
@@ -136,7 +173,9 @@ def main():
     copy_assets()
     
     # Строка ниже была исправлена
-    print("🎉 ГОТОВО! Загружай public/ на Netlify")
+    print("\n🎉 ГОТОВО! Загружай public/ на Netlify")
+    print("🔗 /index.html ← главная")
+    print("🔗 /product.html?slug=... ← детальная страница")
 
 if __name__ == '__main__':
     main()
