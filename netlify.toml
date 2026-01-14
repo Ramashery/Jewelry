@@ -8,6 +8,29 @@
   publish = "public"
 
 # --- Секция Переадресации и Перезаписи ---
+# Правила читаются сверху вниз. Первое совпавшее правило срабатывает.
+
+# --- НОВЫЕ ПРАВИЛА ---
+
+# ПРАВИЛО №A: Редирект с /index.html на "чистый" URL
+# Решает проблему, когда /index.html остается в адресной строке.
+# Работает для любой страницы, например: /about/index.html -> /about/
+[[redirects]]
+  from = "/:splat/index.html"
+  to = "/:splat"
+  status = 301
+  force = true
+
+# ПРАВИЛО №B: Редирект с технического домена Netlify на основной
+# Убирает дубликат сайта на jewelrycraftstbilisi.netlify.app.
+# :splat сохраняет путь (например, /about -> /about)
+[[redirects]]
+  from = "https://jewelrycraftstbilisi.netlify.app/*"
+  to = "https://minankari.art/:splat"
+  status = 301
+  force = true
+
+# --- ВАШИ СУЩЕСТВУЮЩИЕ ПРАВИЛА (остаются без изменений) ---
 
 # ПРАВИЛО №1: "Невидимая" перезапись (Rewrite) для нашего основного URL
 # Когда кто-то заходит на .../product.html?slug=...
