@@ -1,0 +1,44 @@
+# Файл: netlify.toml (ФИНАЛЬНАЯ ВЕРСИЯ)
+
+[build]
+  command = "pip install -r requirements.txt && python generate_site.py"
+  publish = "public"
+
+# --- Правила для "чистых" URL (без .html) ---
+[[redirects]]
+  from = "/about"
+  to = "/about.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog"
+  to = "/blog.html"
+  status = 200
+
+[[redirects]]
+  from = "/cast"
+  to = "/cast.html"
+  status = 200
+
+# --- ПРАВИЛО ДЛЯ СТАТИЧЕСКИ СГЕНЕРИРОВАННЫХ ТОВАРОВ ---
+# Когда кто-то заходит на .../product.html?slug=...
+[[redirects]]
+  from = "/product.html"
+  query = {slug = ":slug"}
+  # ...мы "под капотом" отдаем ему контент из сгенерированного файла.
+  to = "/product/:slug/index.html"
+  status = 200
+  force = true # Важно для перезаписи
+
+# --- Правила для редиректов (убираем дубликаты) ---
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://jewelrycraftstbilisi.netlify.app/*"
+  to = "https://minankari.art/:splat"
+  status = 301
+  force = true
