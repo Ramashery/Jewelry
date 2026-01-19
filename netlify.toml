@@ -1,0 +1,59 @@
+# =================================================================
+#  ФИНАЛЬНАЯ КОНФИГУРАЦИЯ Netlify для minankari.art (v6)
+#  - Чистые URL для корневых страниц (about, blog, cast).
+#  - SSG для товаров и динамические посты работают как раньше.
+#  - Языковые папки (/en/, /ru/, /ka/) не затрагиваются.
+# =================================================================
+
+# --- 1. Настройки сборки (остаются без изменений) ---
+[build]
+  command = "pip install -r requirements.txt && python generate_site.py"
+  publish = "public"
+
+# --- 2. Правила переадресации и перезаписи ---
+
+# ПРАВИЛА №1 и №2: Для страниц товаров (SSG). Не меняются.
+[[redirects]]
+  from = "/product.html"
+  query = {slug = ":slug"}
+  to = "/product/:slug/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/product/:slug/"
+  to = "/product.html?slug=:slug"
+  status = 301
+  force = true
+
+# ПРАВИЛО №3: РЕДИРЕКТ С .HTML НА ЧИСТЫЙ URL (ТОЛЬКО ДЛЯ КОРНЯ)
+# Убирает дубли контента для SEO.
+# Пример: /about.html -> /about
+[[redirects]]
+  from = "/:page.html"
+  to = "/:page"
+  status = 301
+  force = true
+  conditions = {Path = ["^/(about|cast|blog)\\.html$"]}
+
+# ПРАВИЛО №4: НЕВИДИМАЯ ПЕРЕЗАПИСЬ ДЛЯ ЧИСТЫХ URL (ТОЛЬКО ДЛЯ КОРНЯ)
+# Позволяет "чистым" URL работать, не выдавая ошибку 404.
+# Пример: запрос /about отдает содержимое /about.html
+[[redirects]]
+  from = "/:page"
+  to = "/:page.html"
+  status = 200 # 200 = Rewrite
+  conditions = {Path = ["^/(about|cast|blog)/?$"]}
+
+# ПРАВИЛО №5: Редирект ТОЛЬКО для корневого /index.html на /
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
+
+# ПРАВИЛО №6: Редирект с технического домена Netlify на основной.
+[[redirects]]
+  from = "https://jewelrycraftstbilisi.netlify.app/*"
+  to = "https://minankari.art/:splat"
+  status = 301
+  force = true
