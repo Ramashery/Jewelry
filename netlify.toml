@@ -1,0 +1,45 @@
+# Файл: netlify.toml (Версия 2.0 - Сохраняет старые URL)
+
+[build]
+  command = "pip install -r requirements.txt && python generate_site.py"
+  publish = "public"
+
+# --- Правила для "чистых" URL (без .html) ---
+# Пользователь заходит на /about, Netlify отдает ему /about.html
+[[redirects]]
+  from = "/about"
+  to = "/about.html"
+  status = 200 # Rewrite (невидимая перезапись)
+
+[[redirects]]
+  from = "/blog"
+  to = "/blog.html"
+  status = 200 # Rewrite
+
+[[redirects]]
+  from = "/cast"
+  to = "/cast.html"
+  status = 200 # Rewrite
+
+# --- Правила для постов блога (остаются как есть) ---
+# URL /en/post?slug=... будет работать, так как файл /en/post.html существует
+# Никаких правил не нужно, Netlify найдет файл сам.
+
+# --- Правила для товаров (остаются как есть) ---
+# URL /product.html?slug=... будет работать, так как файл /product.html существует
+# Никаких правил не нужно.
+
+# --- Правила для редиректов (убираем дубликаты) ---
+# Убираем /index.html из URL
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
+
+# Редирект с технического домена на основной
+[[redirects]]
+  from = "https://jewelrycraftstbilisi.netlify.app/*"
+  to = "https://minankari.art/:splat"
+  status = 301
+  force = true
