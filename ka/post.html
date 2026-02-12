@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en"> <!-- Язык будет установлен динамически -->
 <head>
+<script>
+    // Этот скрипт убирает ?slug=... из адресной строки после редиректа
+    if (window.location.search.indexOf('slug=') > -1) {
+        var cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+    }
+</script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
