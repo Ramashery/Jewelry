@@ -114,3 +114,10 @@
   from = "/cast"
   to = "/cast.html"
   status = 200
+
+  # (Оставьте ваши текущие настройки [build] и [[redirects]] без изменений)
+
+# Добавьте это в конец файла:
+[[edge_functions]]
+  path = "/*"
+  function = "clean-slug"
